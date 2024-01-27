@@ -1,0 +1,12 @@
+*lib:
+--start-group -lc -leval1 --end-group
+
+*startfile:
+eval1-start.o%s crti.o%s crtbegin.o%s
+
+*link:
+-T fr30.ld%s -Ttext 0x000E0000 -Tdata 0x01000000
+
+*endfile:
+crtend.o%s crtn.o%s
+

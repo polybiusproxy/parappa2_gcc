@@ -1,0 +1,9 @@
+*lib:
+--start-group -lc -leval1 --end-group
+
+*startfile:
+eval1-start.o%s
+
+*link:
+-T eval1.ld%s -Ttext 0x40000000 -Tdata 0x48000000
+

@@ -1,0 +1,33 @@
+# DVP testcases
+
+set orig_ASFLAGS $ASFLAGS
+append ASFLAGS " -I${srcdir}/${subdir}"
+
+if [istarget dvp-*-*] {
+    run_dump_test "basic-1"
+    run_dump_test "br-1"
+    run_dump_test "br-2"
+    run_dump_test "upper-1"
+    run_dump_test "upper-2"
+    run_dump_test "lower-1"
+    run_dump_test "lower-2"
+    run_dump_test "vif-1"
+    run_dump_test "vif-2"
+    run_dump_test "vif-3"
+    run_dump_test "vif-4"
+    run_dump_test "bignum-1"
+    run_dump_test "gifpacked-1"
+    run_dump_test "gifreglist-1"
+    run_dump_test "gifimage-1"
+    run_dump_test "dma-1"
+    run_dump_test "dma-2"
+    run_dump_test "mpg-1"
+    run_dump_test "mpg-2"
+    run_dump_test "relax-1"
+
+    run_dump_test "align"
+    run_dump_test "align-2"
+    run_dump_test "semi"
+}
+
+set ASFLAGS $orig_ASFLAGS

@@ -1,0 +1,12 @@
+*lib:
+--start-group -lc -lmb86x -lgcc --end-group
+
+*startfile:
+mb86x-vec.o%s mb86x-start.o%s crtbegin.o%s
+
+*link:
+-T bsp86x.ld%s -Ttext 0x00000000 -Tdata 0x04000000
+
+*endfile:
+crtend.o%s
+

@@ -1,0 +1,27 @@
+*lib:
+--start-group -l328ads -lc -lgcc --end-group
+
+*cpp_cpu_default:
+%{!ansi:-Dmc68000 } -D__mc68000 -D__mc68000__
+
+*cpp_subtarget:
+-DCPU_MC68328 -DCPU_MC68000 -DBOARD_HEADER=\<bsp/328ads.h\>
+
+*cc1:
+-m68000 -msoft-float
+
+*cc1plus:
+-m68000 -msoft-float
+
+*startfile:
+328ads-start.o%s crtbegin.o%s
+
+*multilib:
+m68000/msoft-float !m68000 !m68020 !m5200 !m68881 !msoft-float;m68000/msoft-float m68000 !m68020 !m5200 !m68881 !msoft-float;m68000/msoft-float !m68000 m68020 !m5200 !m68881 !msoft-float;m68000/msoft-float !m68000 !m68020 m5200 !m68881 !msoft-float;m68000/msoft-float !m68000 !m68020 !m5200 m68881 !msoft-float;m68000/msoft-float !m68000 !m68020 !m5200 !m68881 msoft-float;m68000/msoft-float m68000 !m68020 !m5200 m68881 !msoft-float;m68000/msoft-float m68000 !m68020 !m5200 !m68881 msoft-float;m68000/msoft-float !m68000 m68020 !m5200 m68881 !msoft-float;m68000/msoft-float !m68000 m68020 !m5200 !m68881 msoft-float;
+
+*link:
+-T 328ads.ld%s -Ttext 0x00400000 -Tdata 0x00000400
+
+*asm_cpu_default:
+-m68000
+

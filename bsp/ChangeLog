@@ -1,0 +1,1485 @@
+1999-03-18  Mark Salter  <msalter@cygnus.com>
+
+	* common/gdb.c: Added code to check for incoming ^C while sending
+	packets.
+
+1999-03-17  Mark Salter  <msalter@cygnus.com>
+
+	* sparc/mb8683x/mb86964.c: Added debug message logging. Fixed irq
+	latch clear.
+	* sparc/mb8683x/mb.c: Added debug log support. Make INT15 edge
+	triggered to simplify NMI handling.
+	* sparc/include/bsp/cpu.h: Added inline support to read/write psr.
+	* sparc/exceptions.S: Added special handler for NMI.
+	* sparc/cpu.c: Add support for debug logging to SRAM buffer.
+	Use special vector for INT15 (NMI).
+
+	* net/timers.c: Added debug logging.
+	* net/tcp.c: Added more debug logging.
+	* common/gdb.c: Added option to log packets.
+	* common/bsplog.c (bsp_log): Added system ticks to log messages.
+
+Wed Mar 17 09:40:07 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* common/common.mk (OBJCOPY_FLAGS): Make sure to remove the page
+	table section from srecords and binaries.
+
+	* common/bsp_if.c (bsp_console_putc): Added conditionally compiled
+	code to only print "printable" characters on the console port.
+
+	* arm/brutus/brutus.specs.coff: Changed the default location of the
+	text segment to be in the second bank of DRAM.
+	* arm/brutus/brutus.specs.coff: Ditto.
+
+	* arm/brutus/brutus.ld: Load the .page_ta* code in its own section
+	so it doesn't take up space if there is nothing in the section.
+	* arm/sa1100-multimedia/sa1100-multimedia.ld: Ditto.
+
+	* arm/sa-1100.c: Added code to handle a second serial port.
+	* arm/include/bsp/sa-1100.h: Ditto.
+
+	* arm/irq-cpu.c (generic_exception_handler): Cleaned up the debug
+	code.
+	
+1999-03-16  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/eval1/init_eval.S: Added wait state for ROM accesses.
+
+1999-03-15  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/include/bsp/cpu.h: Add DISABLE_IRQ, ENABLE_IRQ, and IRQ_FLAGS.
+	* fr30/cpu.c (_bsp_cpu_init): Add support for debug logging under
+	if BSP_LOG defined.
+
+Fri Mar 12 15:09:42 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/sa-1100.c (uart_setbaud): Disable the uart RX and TX blocks
+	before changing the baud rate.
+
+	* arm/aeb-1/aeb-1-rom.specs.coff: Added extra leading underscore
+	for coff target.
+	* arm/aeb-1/aeb-1.specs.coff: Ditto.
+	* arm/brutus/brutus-rom.specs.coff: Ditto.
+	* arm/brutus/brutus.specs.coff: Ditto.
+	* arm/ebix-db/ebix-rom.specs.coff: Ditto.
+	* arm/ebix-db/ebix.specs.coff: Ditto.
+	* arm/ebsa285/ebsa-rom.specs.coff: Ditto.
+	* arm/ebsa285/ebsa.specs.coff: Ditto.
+	* arm/pid/armpid-rom.specs.coff: Ditto.
+	* arm/pid/armpid.specs.coff: Ditto.
+	* arm/sa1100-multimedia/sa1100-multimedia-rom.specs.coff: Ditto.
+	* arm/sa1100-multimedia/sa1100-multimedia.specs.coff: Ditto.
+
+1999-03-12  Mark Salter  <msalter@cygnus.com>
+
+	* common/gdb-threads.c (_gdb_changethread): Fixed for case where we
+	are changing to original (current) thread.
+
+	* include/bsp/dbg-threads-api.h: Added prototype for dbg_scheduler().
+
+1999-03-11  Mark Salter  <msalter@cygnus.com>
+
+	* include/gdb-threads.h: Changed prototype for _gdb_currthread().
+
+	* common/gdb.c (__unpack_nibbles): Fixed off by one bug.
+	(process_query): Fixed pointer pkt pointer passed to thread funcs. 
+	Support current thread query.
+
+	* common/gdb-threads.c: Cleaned up debug messages. Added function
+	to handle current thread query.
+
+Thu Mar 11 19:56:59 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* configure.in: Turn on the boards for arm or strongarm coff targets.
+	* configure: Regenerated.
+
+	* common/common.mk (OBJCOPY_FLAGS): Add --remove-section=.bss to
+	OBJCOPY_FLAGS to force it to not dump the bss section to binary
+	and srecord files.  Since the sections are not loaded and contain
+	all 0's it doesn't need to explicitly be in the image.  Also 
+	the base address of the bss section for these boards was so
+	high that it was crashing objcopy.
+
+1999-03-11  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/eval1/eval.c: Added small receive queue for uart.
+
+1999-03-10  Drew Moseley  <dmoseley@cygnus.com>
+
+	* configure.in: Temporarily turn off building for any arm or
+	strongarm coff targets since it is now broken.
+	* configure: Regenerated
+
+Wed Mar 10 17:24:16 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/aeb-1/aeb-1.ld: Fixed error in handling of underscores
+	on identifiers that was discovered when supporting coff.
+	* arm/brutus/brutus.ld: Ditto.
+	* arm/ebix-db/ebix.ld: Ditto.
+	* arm/ebsa285/ebsa.ld: Ditto.
+	* arm/pid/armpid.ld: Ditto.
+	* arm/sa1100-multimedia/sa1100-multimedia.ld: Ditto.
+
+	* arm/vectors.S: Removed typo for coff targets.
+
+	* configure.in: Added support for coff targets for arm and
+ 	strongarm.	
+	* configure: Regenerated.
+	
+	* arm/aeb-1/aeb-1-rom.specs.coff: Supporting coff and elf
+ 	simultaneously requires two separate specs files. New file.
+	* arm/aeb-1/aeb-1-rom.specs.elf: Ditto. New file.
+	* arm/aeb-1/aeb-1.specs.coff: Ditto. New file.
+	* arm/aeb-1/aeb-1.specs.elf: Ditto. New file.
+	* arm/brutus/brutus-rom.specs.coff: Ditto. New file.
+	* arm/brutus/brutus-rom.specs.elf: Ditto. New file.
+	* arm/brutus/brutus.specs.coff: Ditto. New file.
+	* arm/brutus/brutus.specs.elf: Ditto. New file.
+	* arm/ebix-db/ebix-rom.specs.coff: Ditto. New file.
+	* arm/ebix-db/ebix-rom.specs.elf: Ditto. New file.
+	* arm/ebix-db/ebix.specs.coff: Ditto. New file.
+	* arm/ebix-db/ebix.specs.elf: Ditto. New file.
+	* arm/ebsa285/ebsa-rom.specs.coff: Ditto. New file.
+	* arm/ebsa285/ebsa-rom.specs.elf: Ditto. New file.
+	* arm/ebsa285/ebsa.specs.coff: Ditto. New file.
+	* arm/ebsa285/ebsa.specs.elf: Ditto. New file.
+	* arm/pid/armpid-rom.specs.coff: Ditto. New file.
+	* arm/pid/armpid-rom.specs.elf: Ditto. New file.
+	* arm/pid/armpid.specs.coff: Ditto. New file.
+	* arm/pid/armpid.specs.elf: Ditto. New file.
+	* arm/sa1100-multimedia/sa1100-multimedia-rom.specs.coff: Ditto. New file.
+	* arm/sa1100-multimedia/sa1100-multimedia-rom.specs.elf: Ditto. New file.
+	* arm/sa1100-multimedia/sa1100-multimedia.specs.coff: Ditto. New file.
+	* arm/sa1100-multimedia/sa1100-multimedia.specs.elf: Ditto. New file.
+	* aeb-1/aeb-1-rom.specs: Ditto. Removed file.
+	* aeb-1/aeb-1.specs: Ditto. Removed file.
+	* brutus/brutus-rom.specs: Ditto. Removed file.
+	* brutus/brutus.specs: Ditto. Removed file.
+	* ebix-db/ebix-rom.specs: Ditto. Removed file.
+	* ebix-db/ebix.specs: Ditto. Removed file.
+	* ebsa285/ebsa-rom.specs: Ditto. Removed file.
+	* ebsa285/ebsa.specs: Ditto. Removed file.
+	* pid/armpid-rom.specs: Ditto. Removed file.
+	* pid/armpid.specs: Ditto. Removed file.
+	* sa1100-multimedia/sa1100-multimedia-rom.specs: Ditto. Removed file.
+	* sa1100-multimedia/sa1100-multimedia.specs: Ditto. Removed file.
+	* arm/aeb-1/board.mk: Ditto.
+	* arm/brutus/board.mk: Ditto.
+	* arm/ebix-db/board.mk: Ditto.
+	* arm/ebsa285/board.mk: Ditto.
+	* arm/pid/board.mk: Ditto.
+	* arm/sa1100-multimedia/board.mk: Ditto.
+
+1999-03-10  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/singlestep.c: Fixed BP setting when target of branch taken is
+	same as branch not taken.
+
+Tue Mar 09 10:34:02 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/brutus/include/bsp/brutus.h (BOARD_MEMORY_LIST): Filled
+	out the memory list correctly.
+	* arm/sa1100-multimedia/include/bsp/sa1100-multimedia.h: Ditto.
+
+	* arm/brutus/brutus.ld: Set the initial stack to the top
+	of the top bank of memory.
+	* arm/sa1100-multimedia/sa1100-multimedia.ld: Ditto.
+
+	* arm/sa-1100.c (__dcache_flush): Cleanup of flushing routine.
+	* arm/include/bsp/sa-1100.h: Ditto.
+
+	* arm/c_start.c (c_start): Added conditionally compiled memory
+	sizing code.
+
+	* include/bsp_if.h: Added some missing SZ definitions.
+
+	* arm/irq-cpu.c (generic_exception_handler): Switch to using an
+	illegal instruction for a breakpoint rather than a SWI.
+	* arm/singlestep.c (insert_ss_break): Ditto.
+	* arm/include/bsp/cpu.h: DItto.
+
+	* arm/gdb-cpu.c (bsp_get_signal): For an undefined instruction
+	check if it is a breakpoint, and if so issue a TARGET_SIGNAL_TRAP
+	rather than TARGET_SIGNAL_ILL.
+
+	* arm/cpu.mk (gdb-cpu.o): Added dependency on insn.h for
+ 	gdb-cpu.o.
+
+	* arm/brutus/include/bsp/brutus.h (HEX_LED): Added defines
+	for flash_led() routine.  Also some clean up.
+
+	* arm/brutus/init_brutus.S: Clean up.
+
+	* arm/brutus/brutus.ld: Set the initial stacks to the correct
+	location.
+
+	* arm/brutus/brutus.c (flash_led): First pass implementation
+	of flash_led() for the brutus board.
+
+Fri Mar 05 17:12:55 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* m68k/cpu.mk: Moved startup file definitions into the board
+	specific makefile so we will get a different startup file(s)
+	created for each boards.
+	* m68k/328ads/328ads.specs.coff: Ditto.
+	* m68k/328ads/328ads.specs.elf: Ditto.
+	* m68k/328ads/board.mk: Ditto.
+	* m68k/include/bsp/cpu.h: Ditto.
+	
+	* include/bsp_if.h: Added some convenience BIT positions and SZ
+	defintions.
+
+	* arm/include/bsp/sa-1100.h: Changed some of the definitions to
+	use the new convenience defines in bsp_if.h.  Removed some
+	duplicately defined registers.  Added some new register defines.
+
+	* arm/brutus/board.mk: Moved microcontroller initialization back
+	into the board init_blah file since it really is dependent on
+	what memory is installed on the board.  
+	* arm/ebix-db/board.mk: Ditto.
+	* arm/ebsa285/board.mk: Ditto.
+	* arm/sa1100-multimedia/board.mk: Ditto.
+	* arm/sa1100-multimedia/init_sa1100-multimedia.S: Ditto.
+	* arm/init_sa-110.S: Ditto. Removed file.
+	* arm/init_sa-1100.S: Ditto. Removed file.
+
+	* arm/brutus/brutus-rom.specs: Setup the correct text and data
+	addresses for the brutus board.
+	* arm/brutus/brutus.specs: Ditto.
+
+	* arm/brutus/init_brutus.S: First pass at brutus initialization
+	code.  Doesn't work yet, but it needs to be checked in now.
+
+	* arm/brutus/include/bsp/brutus.h: Added some brutus definitions
+	(LED's and such).
+
+	* arm/ebix-db/init_ebix.S: Remove some unnecessary code.
+	* arm/ebsa285/init_ebsa.S: Ditto.
+
+1999-03-05  Mark Salter  <msalter@cygnus.com>
+
+	* net/socket.c: Reorganized so that client layer can catch close.
+
+	* net/pktbuf.c: Added BSPLOG statements as debugging aid.
+	* net/enet.c: Ditto.
+	* net/timers.c: Ditto.
+	* net/tcp.c: Ditto. Fixed several synchronization bugs.
+
+	* include/bsp_if.h: Added _bsp_dbg_connect_abort() prototype.
+
+	* include/net.h: Modified some socket interfaces.
+
+	* common/common.mk: Add rule for bsplog.o dependencies.
+
+	* common/gdb.c: Catch connection reset/close and behave as if
+	inferior was killed.
+
+	* common/net.c: Reorganized to catch connection resets/closings.
+
+	* common/bsplog.c: New file.
+	* include/bsplog.h: New file.
+
+1999-03-03  Nick Clifton  <nickc@cygnus.com>
+
+	* fr30/fr30.ld: Add explicit placements of the .eh_frame and
+	.gcc_except_table sections.
+
+Wed Mar 03 14:28:35 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/brutus/init_brutus.S: Call new routine _sa1100_init from
+ 	_bsp_init_stack instead of executing that code inline.
+	* arm/sa1100-multimedia/init_sa1100-multimedia.S: Ditto.
+
+	* arm/brutus/board.mk (init_sa-1100.o): Added dependency
+ 	information for new file.
+	* arm/ebix-db/board.mk: Ditto.
+	* arm/ebsa285/board.mk: Ditto.
+	* arm/sa1100-multimedia/board.mk: Ditto.
+
+	* arm/sa-110.c: Define the bauds structure here rather than in
+ 	board-specific code since the clocks and baud generation for the
+ 	SA110 and SA1100 happen on the microcontroller.
+	* arm/sa-1100.c: Ditto.
+	* arm/brutus/include/bsp/brutus.h: Ditto.
+	* arm/ebix-db/include/bsp/ebix.h: Ditto.
+	* arm/ebsa285/include/bsp/ebsa.h: Ditto.
+	* arm/sa1100-multimedia/include/bsp/sa1100-multimedia.h: Ditto.
+	
+	* arm/init_sa-110.S: New file.
+	* arm/init_sa-1100.S: New file.
+
+1999-03-02  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/cpu.mk: Use fr30-specific register functions.
+
+Tue Mar 02 11:49:51 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/brutus/brutus.c (_bsp_install_board_irq_controllers): Moved
+ 	call to _bsp_install_sa110_irq_controllers() out of this routine
+ 	and into the main cpu routines.
+	* arm/ebix-db/ebix.c: Ditto.
+	* arm/ebsa285/ebsa.c: Ditto.
+	* arm/sa1100-multimedia/sa1100-multimedia.c: Ditto.
+	
+	* arm/sa-110.c (_bsp_install_sa110_irq_controllers): Added some
+ 	debug code.  * arm/sa-1100.c
+ 	(_bsp_install_sa1100_irq_controllers): Ditto.
+	(uart_irq_handler): Test the right bits to determine if it's my
+ 	interrupt.  Also clear the bits in the status register by writing
+ 	1's to them.
+
+	* arm/irq-cpu.c (_bsp_install_cpu_irq_controllers): Added
+ 	compile-time conditional calls to
+ 	_bsp_install_sa1100_irq_controllers() and
+ 	_bsp_install_sa110_irq_controllers().
+
+	* arm/sa1100-multimedia/init_sa1100-multimedia.S: Initialize the
+ 	pll to a known state.  Enable the icache and dcache.
+
+	* arm/sa1100-multimedia/init_sa1100-multimedia.S: Initialize
+	the pll to a known state.
+	Enable the icache and dcache.
+
+	* arm/include/bsp/sa-110.h (MMU): Make sure MMU is defined.
+	* arm/include/bsp/sa-1100.h (MMU): Ditto.  Removed cache register
+ 	definitions.  They are now in cpu.h
+
+	* arm/include/bsp/cpu.h (BREAKPOINT): Removed several unnecessary
+ 	trailing semicolons.
+	(__mcr): Added #defines to set up inline asm calls to mcr and
+ 	mrc.x
+	(__mrc): Ditto.  Added basic MMU definitions.
+
+	* arm/brutus/brutus.c (_bsp_board_init): Removed setting of the
+ 	.cpu field of the platform info structure.  It is now set in
+ 	arm/sa-1100.c
+	* arm/ebix-db/ebix.c: Ditto.
+	* arm/ebsa285/ebsa.c: Ditto.
+	* arm/sa1100-multimedia/sa1100-multimedia.c: Ditto.
+
+	* arm/aeb-1/aeb-1.ld: Added the ".vectors" section into the data
+ 	section.  Also added the ".page_table" section at the correct
+ 	address.
+	* arm/brutus/brutus.ld: Ditto.
+	* arm/ebix-db/ebix.ld: Ditto.
+	* arm/ebsa285/ebsa.ld: Ditto.
+	* arm/pid/armpid.ld: Ditto.
+	* arm/sa1100-multimedia/sa1100-multimedia.ld: Ditto.
+
+	* arm/aeb-1/aeb-1-rom.specs: Moved the data address to 0 since it
+ 	now incorporates the ".vectors" section.
+	* arm/brutus/brutus-rom.specs: Ditto.
+	* arm/ebix-db/ebix-rom.specs: Ditto.
+	* arm/ebsa285/ebsa-rom.specs: Ditto.
+	* arm/pid/armpid-rom.specs: Ditto.
+
+	* arm/vectors.S: Put the exception vectors into the ".vectors"
+ 	section.  This is put at address 0 by the linker script, so there
+ 	is no hardcoded addressing going on.  Added the ".page_table"
+ 	section which is located at the right memory location by the
+ 	linker script.
+
+	* arm/start.S: Make sure that the exception vectors in ROM are
+ 	only enabled for the SA1100 Multimedia and Brutus boards.  This
+ 	will go away once we enable the MMU and put RAM at 0.
+
+	* arm/singlestep.c (insert_ss_break): Call the dcache and icache
+ 	flush routines after setting a breakpoint so we are sure to get
+ 	the latest instructions from ram.
+
+	* arm/sa-1100.c (__icache_flush): New routine.
+	(__dcache_flush): Ditto.
+
+	* arm/cpu.c (_bsp_initvectors): Removed explicit memcpy of vectors
+ 	from rom to ram.  It is now handled as initialized data, and
+ 	copied there by c startup code.
+	(_bsp_mmu_init): New Routine to handle mmu initialization.
+  	Currently stubbed out.
+	(_bsp_cpu_init): Make sure the caches and cache info structures
+ 	are properly initialized.
+
+	* arm/sa1100-multimedia/include/bsp/sa1100-multimedia.h: Increased
+ 	the delay count on PORT_TOGGLE_DEBUG() to compensate for having
+ 	the icache enabled.
+	* arm/sa1100-multimedia/sa1100-multimedia.c: Ditto.
+
+	* arm/sa1100-multimedia/sa1100-multimedia.specs: Setup the text
+ 	section properly.
+
+1999-02-25  Mark Salter  <msalter@cygnus.com>
+
+	* sparc/cpu.c (_bsp_install_vsr): Make sure MT debug hook is NULL.
+	* sparc/mb8683x/mb.c (kill_hook): Reinstall vectors in case 
+	they were patched by user program.
+
+	* sparc/exceptions.S: Don't turn interrupts on if stub entry is
+	being called.
+
+1999-02-24  Mark Salter  <msalter@cygnus.com>
+
+	* sparc/mb8683x/mb.c (uart_irq_handler): Make sure queue is emptied
+	when ^C detected.
+	(kill_hook): New function to ensure interrupts are masked when
+	debugger 'kills'  inferior program.
+
+	* common/gdb.c: Eliminated spurious '+' characters.
+	Added kill hook for bsp use.
+
+	* common/queue.c (_bsp_enqueue): Fixed overflow problem.
+
+Wed Feb 24 16:23:15 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/start.S: Setup some interrupt vectors at the base
+	of the .text segment to the SA1100 Multimedia board
+	will work until we get the MMU configured to remap ram
+	to 0.
+
+	* arm/sa-1100.c: Initialize the IRQ controller properly.
+	Mask some register fields properly.
+
+	* arm/include/bsp/sa-1100.h: Clean up.  Also added some
+	new register definitions.
+
+	* arm/cpu.mk: Moved startup file definitions into the board
+	specific makefile so we will get a different startup file(s)
+	created for each boards.
+	* arm/aeb-1/aeb-1-rom.specs: Ditto.
+	* arm/aeb-1/aeb-1.specs: Ditto.
+	* arm/aeb-1/board.mk: Ditto.
+	* arm/brutus/board.mk: Ditto.
+	* arm/brutus/brutus-rom.specs: Ditto.
+	* arm/brutus/brutus.specs: Ditto.
+	* arm/ebix-db/board.mk: Ditto.
+	* arm/ebix-db/ebix-rom.specs: Ditto.
+	* arm/ebix-db/ebix.specs: Ditto.
+	* arm/ebsa285/board.mk: Ditto.
+	* arm/ebsa285/ebsa-rom.specs: Ditto.
+	* arm/ebsa285/ebsa.specs: Ditto.
+	* arm/pid/board.mk: Ditto.
+	* arm/pid/armpid-rom.specs: Ditto.
+	* arm/pid/armpid.specs: Ditto.
+	* arm/sa1100-multimedia/board.mk: Ditto.
+	* arm/sa1100-multimedia/sa1100-multimedia-rom.specs: Ditto.
+	* arm/sa1100-multimedia/sa1100-multimedia.specs: Ditto.
+	* common/common.mk: Ditto.
+	* arm/brutus/include/bsp/brutus.h: Fix some types in the asm
+	macros that resulted in invalid instructions.
+	* arm/ebix-db/include/bsp/ebix.h: Ditto.
+	* arm/ebsa285/include/bsp/ebsa.h: Ditto.
+
+	* arm/ebsa285/ebsa.c: Implemented the flash_led() routine.
+
+	* arm/sa1100-multimedia/init_sa1100-multimedia.S: Implemented
+	_bsp_init_stack routine.  Now it initialized the DRAM controller
+	and discrete LEDs.
+
+	* arm/sa1100-multimedia/sa1100-multimedia.c: Implemented the
+	flash_led() routine.
+
+	* arm/sa1100-multimedia/include/bsp/sa1100-multimedia.h: Cleanup.
+
+1999-02-24  Mark Salter  <msalter@cygnus.com>
+
+	* net/ip.c (ip_addr_match): Match all if our local address is 0.0.0.0.
+
+1999-02-22  Mark Salter  <msalter@cygnus.com>
+
+	* sparc/include/gdb-cpu.h: Added support for 'T' packet.
+	* sparc/vectors.S: Fixed window flush handler.
+	* sparc/reg.c (bsp_set_register): Fixed setting of PC.
+	* sparc/exceptions.S: Fixed restore of %psr.
+
+	* common/bsp_if.c: Fixed cache flush after installing dbg and kill
+	handlers
+
+	* common/gdb.c: Added thread support.
+	* sparc/gdb-cpu.c: Ditto.
+	* sparc/include/bsp/cpu.h: Ditto.
+	* sparc/mb8683x/board.mk: Ditto.
+	* common/common.mk: Ditto.
+	* common/gdb-threads.c: New file.
+	* common/threads-syscall.c: New file.
+	* include/gdb-threads.c: New file.
+	* include/threads-syscall.c: New file.
+	* include/bsp/dbg-threads-api.h: New file.
+
+	* sparc/mb8683x/init_86x.S: Put this init code in a special section
+	to force into first 32K of ROM.
+	* sparc/bsp86x.ld: Place .bsp_init section before .text
+
+Mon Feb 22 12:33:49 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/sa1100-multimedia/board.mk: Renamed all sa1100 stuff
+	to be sa1100-multimedia so it wouldn't conflict w/ the sa-1100
+	files corresponding to the microcontroller itself.
+	* arm/sa1100-multimedia/init_sa1100-multimedia.S: Ditto. New file.
+	* arm/sa1100-multimedia/sa1100-multimedia-rom.specs: Ditto. New file.
+	* arm/sa1100-multimedia/sa1100-multimedia.c: Ditto. New file.
+	* arm/sa1100-multimedia/sa1100-multimedia.ld: Ditto. New file.
+	* arm/sa1100-multimedia/sa1100-multimedia.specs: Ditto. New file.
+	* arm/sa1100-multimedia/init_sa1100.S: Ditto. Removed file.
+	* arm/sa1100-multimedia/sa1100-rom.specs: Ditto. Removed file.
+	* arm/sa1100-multimedia/sa1100.c: Ditto. Removed file.
+	* arm/sa1100-multimedia/sa1100.ld: Ditto. Removed file.
+        * arm/sa1100-multimedia/sa1100.specs: Ditto. Removed file.
+
+	* arm/brutus/board.mk (sa-1100.o): Made sa-1100.o depend on 
+	board-specific header file.
+	* arm/ebix-db/board.mk (sa-1100.o): Ditto.
+	* arm/ebsa285/board.mk (sa-1100.o): Ditto.
+
+	* configure.in: Added sa1100-multimedia eval board.
+	* configure: Regenerated.
+
+1999-02-18  Mark Salter  <msalter@cygnus.com>
+
+	* include/gdb.h: Added prototypes for exported packet forming/unpacking
+	helper routines.
+
+	* common/gdb.c: Support binary memory writes. Support CRC. Merged in
+	some thread support.
+
+	* sparc/mb8683x/mb.c: Get cpu version and modify startup accordingly.
+	* sparc/include/bsp/cpu.h: Add space for saved %asr17.
+	* sparc/stublow.S: Save and restore %asr17.
+
+Thu Feb 18 12:55:42 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/brutus/brutus-rom.specs: Added -DCPU_SA1100 to the
+	command line.
+	* arm/brutus/brutus.specs: Ditto.
+
+	* arm/brutus/board.mk (BOARD_OBJS): Added sa-1100.o to
+	the BOARD_OBJS macro.
+	(BOARD_DEPENDS): Added the BOARD_DEPENDS macro.
+
+	* arm/include/bsp/cpu.h: Added conditional include
+	of sa-1100.h
+
+	* arm/ebsa285/ebsa.c: Filled in the stub functions.
+	* arm/ebsa285/init_ebsa.S: Ditto.
+	* arm/ebsa285/include/bsp/ebsa.h: Ditto.
+	* arm/brutus/brutus.c: Ditto.
+	* arm/brutus/init_brutus.S: Ditto.
+	* arm/brutus/include/bsp/brutus.h: Ditto.
+
+	* arm/ebsa285/ebsa-rom.specs: Set the real text address.
+	* arm/brutus/brutus-rom.specs: Ditto.
+	
+	* arm/ebsa285/board.mk (BOARD_OBJS): Added sa-110.o to the 
+	BOARD_OBJS macro.
+	(BOARD_DEPENDS): Added the BOARD_DEPENDS macro.
+
+	* arm/ebix-db/include/bsp/ebix.h (BOARD_BAUD_LIST): Filled in
+	the BAUD_LIST.
+	(BOARD_MEMORY_LIST): Filled in the MEMORY_LIST.
+
+	* arm/sa-110.c: Lots of cleanup.
+
+	* arm/irq-cpu.c (_bsp_install_cpu_irq_controllers): Moved call
+	of _bsp_install_sa110_irq_controllers() and 
+	_bsp_install_sa1100_irq_controllers() to the board specific
+	source file.
+	* arm/ebix-db/ebix.c: Ditto.
+
+	* configure.in: Added ebsa285 and brutus boards to the default
+	boards list.
+	* configure: Regenerated.
+
+	* devo/bsp/arm/sa-1100.c: New file.
+	* devo/bsp/arm/include/bsp/sa-1100.h: New file.
+
+1999-02-18  Mark Salter  <msalter@cygnus.com>
+
+	* sparc/mb8683x/init_86x.S: Size memory so SIMMs are usable.
+	* sparc/include/bsp/cpu.h: Add more info to FUNC_START and FUNC_END.
+	* sparc/cpu.c (_bsp_install_vsr): Install low-level stub entry.
+	* sparc/stublow.S: New file.
+	* sparc/cpu.mk (CPU_OBJS): Add stublow.o to list.
+	* sparc/exceptions.S: Only restore certain %psr fields.
+	Broke out stub entry code to separate function/file.
+	* sparc/mb8683x/mb86964.c: Added interrupt support.
+	* sparc/mb8683x/mb.c: Added interrupt support.
+	* sparc/start.S: Enable interrupts before calling main.
+	* sparc/irq-cpu.c: Added support for MB86940 interrupt controller.
+
+1999-02-17  Mark Salter  <msalter@cygnus.com>
+
+	* sparc/mb8683x/mb86x.specs: Fixed text and data addresses.
+	* sparc/start.S: Zero arguments to main.
+	* sparc/bsp-crt0.S: Initialize pointer to shared data.
+	* sparc/mb8683x/mb86964.h: Made read/write routine inline.
+	* sparc/mb8683x/mb.c (init_ms_timer): Use prescaler output.
+	* sparc/mb8683x/init_86x.S: Moved cache routines to separate file.
+	* sparc/include/bsp/cpu.h: Added window flush exception.
+	* sparc/vectors.S: Added support for window flush "ta 3".
+	* sparc/exceptions.S: Added support for sparclite debug regs. Fixed
+	reenabling of traps.
+	* sparc/cpu.c (syscall_handler): Fixed arg4.
+	(_bsp_install_vsr): Setup window flush handler.
+	(syscall_handler): Take args from %o regs, not %i.
+
+1999-02-16  Mark Salter  <msalter@cygnus.com>
+
+	* sparc/mb8683x/board.mk: Add rules for new files.
+	* sparc/mb8683x/mb.c (_bsp_board_init): Add network support.
+	* sparc/mb8683x/mb86964.h: New file.
+	* sparc/mb8683x/mb86964.c: New file.
+	* sparc/mem.c: Added support for arbitrary address spaces.
+	* sparc/cache-sparcl.S: New file.
+	* sparc/mem-asm.S: New file.
+	* sparc/cpu.mk: Added mem-asm.o and rule for cache-sparcl.o
+
+1999-02-15  Mark Salter  <msalter@cygnus.com>
+
+	* sparc/include/bsp/cpu.h: Added new defines.
+	* sparc/trap.S: Filled in with actual code.
+	* sparc/mb8683x/mb.c (uart_putchar): Test TXRDY instead of TXEMP.
+	* sparc/cpu.mk (CPU_OBJS): Added exceptions.o to list.
+	* sparc/cpu.c (_bsp_install_vsr): New function to install bsp vectors.
+	* sparc/vectors.S: Save psr in trampoline code. Add trap to vsr table.
+	* sparc/exceptions.S: New file.
+	* sparc/start.S: Save board memory info.
+	* sparc/gdb-cpu.c: Filled in incomplete parts.
+
+1999-02-11  Mark Salter  <msalter@cygnus.com>
+
+	* ppc/cma101/cma101.c (_bsp_board_init): Modified net init interface.
+	* ppc/cma101/mb86964.c: Added interrupt support.
+
+	* common/gdb.c: Modified to delay sending packet ACK to speed up
+	tcp channel downloads dramatically.
+	* fr30/eval1/init_eval.S: Added defines for DMCR.
+	* fr30/eval1/mb86964.c: Driver cleanups. Added interrupt support.
+	* fr30/eval1/eval.c: Modified serial driver to remove need for external
+	buffering. Support irq enable/disable ops. Use new network interface.
+	* include/net.h: New and updated prototypes.
+	* include/bsp/bsp.h: Added prototypes.
+	* include/bsp_if.h: Added defines for new comm port control ops.
+	* net/socket.c: Added non-blocking read.
+	* common/bsp_if.c: Added functions to enable/disable debug interrupts.
+	* common/sysinfo.c (_bsp_sysinfo): Handle network channel.
+	* common/main.c (main): If we're using a network channel, force console
+	to that same channel.
+	* common/bsp.c: Cleaned up support for network channel.
+	* common/net.c: Ditto.
+
+Thu Feb 11 11:53:41 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/ebix-db/ebix.c: First pass at the ebix board bsp.
+	* arm/ebix-db/init_ebix.S: Ditto.
+	* arm/ebix-db/include/bsp/ebix.h: Ditto.
+	
+	* arm/brutus/brutus-rom.specs: Changed the default defines.
+	* arm/brutus/brutus.specs: Ditto.
+	* arm/ebsa285/ebsa-rom.specs: Ditto.
+	* arm/ebsa285/ebsa.specs: Ditto.
+	* arm/sa1100-multimedia/sa1100-rom.specs: Ditto.
+	* arm/sa1100-multimedia/sa1100.specs: Ditto.
+	* arm/ebix-db/ebix-rom.specs: Ditto.  Also setup the text and data
+ 	addresses
+	* arm/ebix-db/ebix.specs: Ditto.
+	
+	* arm/irq-cpu.c (_bsp_install_cpu_irq_controllers): Added code
+	for the SA110 microcontroller.
+	* arm/include/bsp/cpu.h: Ditto:
+	
+	* arm/cpu.mk (CPU_DEPENDS): Added new make variable that is added
+ 	to the end of the ALL_DEPENDS macro.
+	* common/common.mk: Ditto:
+	* arm/aeb-1/board.mk (BOARD_DEPENDS): Ditto.
+	* arm/ebix-db/board.mk (BOARD_DEPENDS): Ditto. Also included
+ 	sa-110.o in build.
+
+	* configure.in: Added strongarm-*-elf target, and ebix-db board.
+	* configure: Regenerated.
+
+	* arm/include/bsp/sa-110.h: New file.
+	* arm/sa-110.c: New file.
+
+1999-02-09  Mark Salter  <msalter@cygnus.com>
+
+	* configure.in: Changed test from sparc86x to sparclite.
+	* configure: Regenerated.
+	* sparc/mb8683x/mb86x-rom.specs: Fixed for sparclite target.
+	* sparc/mb8683x/mb86x.specs: Ditto.
+	* sparc/mb8683x/mb.c: Fleshed out serial support.
+	* sparc/mb8683x/board.mk (BOARD_CFLAGS): Added -DBOARD_MB8683X.
+	* sparc/include/mb86940.h: Added defined and inline functions to
+	read/write mb86940 registers.
+	* sparc/vectors.S: Added default handler to flash trap number on leds.
+	* sparc/start.S: Commented out ctors/dtors stuff for now.
+
+1999-02-08  Nick Clifton  <nickc@cygnus.com>
+
+	* configure.in: Add support for StrongARM target.
+	* configure: Regenerate.
+
+Fri Feb 05 15:32:53 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/brutus/.Sanitize: New file.
+	* arm/brutus/board.mk: New file.
+	* arm/brutus/brutus-rom.specs: New file.
+	* arm/brutus/brutus.c: New file.
+	* arm/brutus/brutus.ld: New file.
+	* arm/brutus/brutus.specs: New file.
+	* arm/brutus/init_brutus.S: New file.
+	* arm/brutus/include/.Sanitize: New file.
+	* arm/brutus/include/bsp/.Sanitize: New file.
+	* arm/brutus/include/bsp/brutus.h: New file.
+	* arm/ebix-db/.Sanitize: New file.
+	* arm/ebix-db/board.mk: New file.
+	* arm/ebix-db/ebix-rom.specs: New file.
+	* arm/ebix-db/ebix.c: New file.
+	* arm/ebix-db/ebix.ld: New file.
+	* arm/ebix-db/ebix.specs: New file.
+	* arm/ebix-db/init_ebix.S: New file.
+	* arm/ebix-db/include/.Sanitize: New file.
+	* arm/ebix-db/include/bsp/.Sanitize: New file.
+	* arm/ebix-db/include/bsp/ebix.h: New file.
+	* arm/ebsa285/.Sanitize: New file.
+	* arm/ebsa285/board.mk: New file.
+	* arm/ebsa285/ebsa-rom.specs: New file.
+	* arm/ebsa285/ebsa.c: New file.
+	* arm/ebsa285/ebsa.ld: New file.
+	* arm/ebsa285/ebsa.specs: New file.
+	* arm/ebsa285/init_ebsa.S: New file.
+	* arm/ebsa285/include/.Sanitize: New file.
+	* arm/ebsa285/include/bsp/.Sanitize: New file.
+	* arm/ebsa285/include/bsp/ebsa.h: New file.
+	* arm/sa1100-multimedia/.Sanitize: New file.
+	* arm/sa1100-multimedia/board.mk: New file.
+	* arm/sa1100-multimedia/init_sa1100.S: New file.
+	* arm/sa1100-multimedia/sa1100-rom.specs: New file.
+	* arm/sa1100-multimedia/sa1100.c: New file.
+	* arm/sa1100-multimedia/sa1100.ld: New file.
+	* arm/sa1100-multimedia/sa1100.specs: New file.
+	* arm/sa1100-multimedia/include/.Sanitize: New file.
+	* arm/sa1100-multimedia/include/bsp/.Sanitize: New file.
+	* arm/sa1100-multimedia/include/bsp/sa1100.h: New file.
+
+Thu Feb 04 14:19:48 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/pid/armpid.c (uart_irq_handler): Make sure we mask values
+	read from the UART_RX_HOLDING register to 16 bits.
+
+Wed Feb 03 16:20:25 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/aeb-1/aeb-1.specs: Load the applications at 0x10000 rather
+	than 0x8000.
+	* arm/pid/armpid.specs: Ditto.
+	* m68k/328ads/328ads.specs.coff: Ditto.
+	* m68k/328ads/328ads.specs.elf: Ditto.
+
+	* arm/vectors.S: Make the exception stack 16k rather than 64k.
+
+Wed Feb 03 08:51:37 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* common: Added new files.
+
+Tue Feb 02 15:08:54 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* common/common.mk: Added new files and dependencies
+
+	* arm/aeb-1/aeb-1.ld: Added a provide of _end.
+	* arm/pid/armpid.ld: Ditto.
+
+	* arm/aeb-1/aeb-1-rom.specs: Added explicit -u option to symbols
+	that we define that are also defined in newlib/libc/sys/arm/syscall.c.
+	This forces the linker to use our functions.
+	* arm/aeb-1/aeb-1.specs: Ditto.
+	* arm/pid/armpid-rom.specs: Ditto.
+	* arm/pid/armpid.specs: Ditto.
+
+	* arm/c_start.c: Removed unnecessary include of BOARD_HEADER
+
+	* common/raise.c: New File.
+	* common/unlink.c: New File.
+	* common/gettimeofday.c: New File.
+	* common/times.c: New File.
+	
+1999-02-01  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/eval1/mb86964.c: Added debug code and tweaked status reading.
+	* fr30/eval1/eval.c: Use current clock settings to determine timer
+	values and baudrate divisors. Supports 25, 12.5, and 6.25MHz busses.
+	* fr30/eval1/init_eval.S: Set PLL, CPU, and bus speed according to SW1
+	setting on motherboard.
+	* fr30/eval1/board.mk (BOARD_CFLAGS): No longer need define for CLK
+	setting. This is now done from DIP switch.
+	* fr30/eval1/README: New file.
+
+	* ppc/evb403/evb.c (sio_irq_handler): Fixed to handle line interrupts
+	and timeout interrupts.
+	* ppc/cma101/cma101.c (uart_irq_handler): Ditto.
+	* ppc/singlestep.c (bsp_singlestep_setup): Added code to decode opcodes
+	and insert breakpoints for singlestepping. The singlestepping support
+	for the PPC403 seems to be broken.
+	* ppc/cache4xx.S: Added sync after dcache flush, isync after icache
+	flush.
+	* ppc/gdb-cpu.c (bsp_get_signal): Return TARGET_SIGNAL_INT for
+	external interrupts.
+
+	* common/gdb.c (_bsp_gdb_handler): Fixed cache flushing after memory
+	writes.
+
+	* common/net.c (_bsp_net_init): Clean up after BOOTP failure so we can
+	fall back to a serial channel.
+
+Mon Feb 01 11:02:33 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* configure.in: Added 328ads, armpid and aeb-1 boards back
+	in, and modified the link options to get libc from ../../newlib.
+	* configure: Regenerated
+	* arm/aeb-1/board.mk (BOARD_LDFLAGS): Modified the link options to 
+	get libc from ../../newlib.
+	* arm/pid/board.mk (BOARD_LDFLAGS): Ditto.
+	* m68k/328ads/board.mk (BOARD_LDFLAGS): Ditto.
+
+1999-02-01  Drew Moseley  <dmoseley@cygnus.com>
+
+	* configure.in: Removed 328ads, armpid and aeb-1 boards
+	temporarily since they were breaking the build.
+
+Wed Jan 27 15:03:24 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* common/bsp.c: Cleaned up debug code.
+
+	* arm/aeb-1/aeb-1.c (DEBUG_UART_CODE): Turn off Debugging
+
+	* arm/vectors.S: Make sure we call UPDATE_REGS_FOR_EXCEPTION_RETURN.
+
+	* arm/irq-cpu.c (generic_exception_handler): Added interrupt controllers
+	and proper bsp handling of irq's.
+	* arm/pid/armpid.c: Ditto
+	* arm/pid/include/bsp/armpid.h: Ditto
+
+	* arm/cpu.c (DEBUG_SYSCALL): Turn off debugging
+
+Thu Jan 21 15:46:51 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/bsp-crt0.S: Finished up single-step code.  All mode 1 and 2
+ 	instructions are now supported, as are all load/store multiple.
+	* arm/singlestep.c: Ditto
+
+1999-01-21  Mark Salter  <msalter@cygnus.com>
+
+	* mips/dve39/i82596.c: Converted to latest driver format.
+
+Wed Jan 20 13:51:38 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/bsp-crt0.S : First pass at real single-stepping.  Now supports
+	Addressing modes 1 & 2.
+	* arm/irq-cpu.c: Ditto
+	* arm/singlestep.c: Ditto
+	* arm/include/insn.h: Ditto
+	
+	* common/gdb.c (_bsp_gdb_handler): Make variable stepping static, and
+	send the start packet if "continuing" or "stepping.
+
+1999-01-19  Mark Salter  <msalter@cygnus.com>
+
+	* common/printf.c (bsp_dvprintf): New function.
+	(bsp_dprintf): New function.
+	* include/bsp/bsp.h: Prototypes for new functions.
+
+	* ppc/cma101/cma101.c (init_uart): Turn on FIFOs.
+	* ppc/bsp.ld: Fixed section alignment.
+	* ppc/bsp-crt0.S (_start): Fixed relocation problem.
+
+Fri Jan 15 14:22:57 1999  Drew Moseley  <dmoseley@cygnus.com>
+
+	* arm/bsp-crt0.S: Got basic exception (other than SWI) processed.
+	* arm/cpu.c: Ditto
+	* arm/gdb-cpu.c: Ditto
+	* arm/irq-cpu.c: Ditto
+	* arm/singlestep.c: Ditto
+	* arm/start.S: Ditto
+	* arm/vectors.S: Ditto
+	* arm/aeb-1/aeb-1.ld: Ditto
+	* arm/include/gdb-cpu.h: Ditto
+	* arm/include/insn.h: Ditto
+	* arm/include/bsp/cpu.h: Ditto
+	* arm/pid/armpid.c: Ditto
+	* arm/pid/armpid.ld: Ditto
+
+	* m68k/include/bsp/cpu.h (__get_sp): New function
+	(__set_sp): New function
+
+	* m68k/328ads/328ads.specs.elf: Added BOARD_HEADER definition.
+	* m68k/328ads/328ads.specs.coff: Ditto
+	* m68k/328ads/328ads-rom.specs.elf: Ditto
+	* m68k/328ads/328ads-rom.specs.coff: Ditto
+
+	* m68k/start.S: Added include of BOARD_HEADER if debugging.
+
+	* m68k/irq-cpu.c (processException): Make sure interrupts are disabled
+	when we drop into the debug stub.
+
+	* common/printf.c (_bsp_assert): Added bsp_assert code and appropriate
+	ifdefs to mimic standard C asserts using bsp_printf.
+	* include/bsp/bsp.h (BSP_ASSERT): Ditto
+	(BSP_MEM_ROM): Modified definition of BSP_MEM_ROM to be different that
+	BSP_MEM_RAM.
+
+	* configure.in: Changed definition of NEED_UNDERSCORE to fit the new definition
+	in the toolchain
+	* configure: Regenerated
+
+1999-01-15  Mark Salter  <msalter@cygnus.com>
+
+	* ppc/mbx/mbx.c: Support additional baud rates. Default 9600.
+
+	* fr30/bsp-crt0.S (_start): Added support to call contructors and
+	deconstructors.
+	* fr30/start.S: Ditto.
+	* fr30/fr30.ld: Moved .init in with .text.
+	* fr30/eval1/eval1-rom.specs: Added start and end files.
+	* fr30/eval1/eval1.specs: Ditto.
+
+	* common/gdb.c (_bsp_gdb_handler): Put in a minor hack to prevent hang
+	if user does 'continue' before 'load'.
+
+1999-01-11  Mark Salter  <msalter@cygnus.com>
+
+	* mips/start.S: Remove leftover debug statements specific to jmr.
+
+	* include/gdb.h (GDB_TCP_SOCKET): Change tcp socket to 1000 to match
+	gdbtk default.
+
+	* ppc/cma101/mb86964.c: Fixed some init values. Add local ethernet
+	address to outgoping packets.
+
+	* ppc/cma101/cma101.c (_bsp_board_init): Use SW1-1 to decide between
+	tcp or serial interface.
+
+	* ppc/cpu.c (_bsp_ms_ticks): Fixed counter diff calculation.
+
+	* fr30/eval1/mb86964.c: Added support for handling endianess issues.
+	Added more debugging help.
+
+1999-01-07  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/eval1/init_eval.S: Expand range of CS1. Don't enable RDY	input.
+
+	* common/bsp_if.c (bsp_install_dbg_handler): Add dcache flush.
+	(bsp_install_kill_handler): Ditto.
+	(bsp_console_read): Add support for ungetc.
+	* include/bsp/bsp.h: Add prototypes for bsp_console_ungetc and
+	bsp_debug_ungetc.
+
+	* common/gdb.c (_bsp_gdb_handler): Don't send packet after a kill.
+
+	* ppc/include/bsp/ppc4xx.h: Added some inlines to get/set special regs.
+	* ppc/gdb-cpu.c (bsp_get_signal): Deal with debug exception on ppc403.
+	* ppc/singlestep.c: Fixed singlestepping for ppc403.
+	* ppc/start.S: Fix handling of machine check and debug exception on
+	ppc403.
+
+1999-01-05    <dmoseley@cygnus.com>
+
+	* bsp/m68k/bsp-crt0.S: Brought into sync with all the mods that occurred
+	in the arm port.
+	* bsp/m68k/cpu.mk: Ditto
+	* bsp/m68k/irq-cpu.c: Ditto
+	* bsp/m68k/start.S: Ditto
+	* bsp/m68k/vectors.S: Ditto
+	* bsp/m68k/328ads/328ads-rom.specs.coff: Ditto
+	* bsp/m68k/328ads/328ads-rom.specs.elf: Ditto
+	* bsp/m68k/328ads/328ads.c: Ditto
+	* bsp/m68k/328ads/328ads.specs.coff: Ditto
+	* bsp/m68k/328ads/328ads.specs.elf: Ditto
+	
+	* bsp/common/common.mk: Make sure all startup files get installed.
+
+	* bsp/common/main.c: Added commented out code to switch the
+	console port to port 1 * bsp/common/gdb.c: Debug message cleanups
+
+	* bsp/include/bsp_if.h: Added prototype for _bsp_init()
+
+	* bsp/include/bsp_start.h: New file (C code versions of crt0 stuff)
+	
+	* configure.in: Added aeb-1 eval board.
+	* configure: Regenerated
+	* bsp/arm/aeb-1/aeb-1-rom.specs: New file
+	* bsp/arm/aeb-1/aeb-1.c: New file
+	* bsp/arm/aeb-1/aeb-1.ld: New file
+	* bsp/arm/aeb-1/aeb-1.specs: New file
+	* bsp/arm/aeb-1/board.mk: New file
+	* bsp/arm/aeb-1/init_aeb-1.S: New file
+	* bsp/arm/aeb-1/include/bsp/aeb-1.h: New file
+	* bsp/arm/include/insn.h: New file
+
+	* bsp/arm/bsp-crt0.S: Heavy modifications for initial implementation
+	of ARM bsp.
+	* bsp/arm/c_bsp-crt0.c: Ditto
+	* bsp/arm/c_start.c: Ditto
+	* bsp/arm/cpu.c: Ditto
+	* bsp/arm/cpu.mk: Ditto
+	* bsp/arm/gdb-cpu.c: Ditto
+	* bsp/arm/irq-cpu.c: Ditto
+	* bsp/arm/singlestep.c: Ditto
+	* bsp/arm/start.S: Ditto
+	* bsp/arm/trap.S: Ditto
+	* bsp/arm/vectors.S: Ditto
+	* bsp/arm/pid/armpid-rom.specs: Ditto
+	* bsp/arm/pid/armpid.c: Ditto
+	* bsp/arm/pid/armpid.ld: Ditto
+	* bsp/arm/pid/armpid.specs: Ditto
+	* bsp/arm/pid/board.mk: Ditto
+	* bsp/arm/pid/init_armpid.S: Ditto
+	* bsp/arm/pid/include/bsp/armpid.h: Ditto
+	* bsp/arm/vectors.S: New file
+
+1999-01-05  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/bsp-crt0.S (_start): Fixed problem with .bss initialization.
+
+	* fr30/start.S: Fixed problem with .bss and .data initialization.
+
+	* fr30/eval1/eval.c (_bsp_init_board_comm): Set default baud to 57.6K.
+
+	* fr30/cpu.mk (CPU_CFLAGS): Remove -DMISSING_SYSCALL_NAMES.
+
+	* common/gdb.c (_bsp_gdb_handler): Save original context so that it can
+	be restored whenever a program is killed.
+
+	* fr30/eval1/init_eval.S: Fix clock setup.
+
+1999-01-04  Mark Salter  <msalter@cygnus.com>
+
+	* ppc/evb403/evb403_rom.specs: Fixed multilib selection.
+	* ppc/mbx/mbx.specs: Ditto.
+	* ppc/mbx/mbx_rom.specs: Ditto.
+	* ppc/cma101/cma.specs: Ditto.
+	* ppc/cma101/cma_rom.specs: Ditto.
+	* ppc/evb403/evb403.specs: Ditto.
+
+	* mips/start.S: Fixed initialization of _bsp_ram_info_ptr.
+	* mips/mem.c (bsp_memory_read): Added missing local declarations.
+	* mips/jmr3904/jmr3904-rom.specs: Change address of data to be a
+	cached address.
+	* mips/jmr3904/jmr.c: Fixed uart read and write routines.
+	* mips/jmr3904/init_jmr.S: Fixed cache init and RAM test.
+
+	* fr30/start.S: Fixed exception handler.
+	* fr30/singlestep.c: Do singlestep by decoding insn and setting
+	breakpoints. Trace flag appears to be broken.
+	* fr30/irq-cpu.c: Fixed enable and disable functions.
+	* fr30/include/bsp/cpu.h: Modified exception numbers and modified
+	exception frame.
+	* fr30/gdb-cpu.c (bsp_get_signal): Fixed signal calculation.
+	* fr30/eval1/mb86964.c: Fixed for 16-bit bus width.
+	* fr30/eval1/mb86964.h: Ditto.
+	* fr30/eval1/eval.c (_bsp_ms_ticks): Add millisecond tick counter for
+	network code.
+	(_bsp_board_init): Check SW1 to decide if we're using tcp or serial.
+	* fr30/eval1/board.mk (BOARD_OBJS): Add mb86964.o to list.
+	* fr30/cpu.mk (CPU_OBJS): Add generic-reg.o and cache.o to list.
+	* fr30/cpu.c (_bsp_cpu_init): Add cache support.
+	* fr30/cache.S: New file for cache support.
+	* fr30/bsp-crt0.S (_start): Cleaned up.
+
+	* include/net.h: Add prototype for _bsp_net_init().
+
+	* common/gdb.c (_bsp_gdb_handler): Send a packet in response to 'k'
+	packet.
+
+	* common/net.c (_bsp_net_init): Add printf when bootp fails.
+
+	* common/irq-rom.c (DEBUG_DISPATCH): Allow commandline override.
+
+	* common/bsp.c (DEBUG_BSP_INIT): Allow commandline override.
+
+	* common/breakpoint.c (bsp_breakpoint): Added some debugging aids.
+
+1998-12-20  Mark Salter  <msalter@cygnus.com>
+
+	* fr30/gdb-cpu.c (bsp_regbyte): Completed implementation.
+	* fr30/eval1/eval1-rom.specs: Link to use DRAM instead of SRAM.
+	* fr30/eval1/mb86964.c: New file.
+	* fr30/eval1/mb86964.h: New file.
+	* fr30/eval1/eval.c (uart_setbaud): Cleaned up.
+
+	* am30/include/bsp/cpu.h: Added enum __regnames.
+
+	* ppc/cma101/cma.specs: Fixed multilib selection.
+	* ppc/cma101/cma_rom.specs: Ditto.
+	* ppc/mbx/mbx.specs: Ditto.
+	* ppc/mbx/mbx_rom.specs: Ditto.
+	* ppc/bsp-crt0.S (_start): Fixed stack alignment problem.
+
+	* configure.in: Added evb403 for ppc target.
+	* configure: Regenerated.
+	* ppc/evb403/*: Support for IBM PPC403 eval board.
+	* ppc/include/bsp/ppc4xx.h: New file.
+	* ppc/cache4xx.c: New file. PPC4xx cache support.
+	* ppc/bsp.ld: Added sections to support PPC403 reset peculiarities.
+	* ppc/cpu.c (_bsp_cpu_init): Added PPC4XX specific initialization.
+	* ppc/include/bsp/cpu.h: Added PPC4XX support.
+	* ppc/irq-cpu.c: Added support for IBM 403GA interrupt controller.
+	* ppc/start.S: Added support for PPC4XX family.
+
+	* common/generic-mem.c: New file.
+	* common/generic-reg.c: New file.
+	* mips/mem.c: New file.
+	* fr30/reg.c: New file.
+	* common/common.mk: Added rules for generic-mem.o and generic-reg.o
+	* include/bsp/bsp.h: Added prototypes for memory and register access.
+	* common/gdb.c: Use bsp provided functions to access inferior memory
+	and regs
+	* ppc/cpu.mk: Add generic-mem.o and generic-reg.o to CPU_OBJS.
+	* am30/cpu.mk: Ditto.
+	* arm/cpu.mk: Ditto.
+	* m68k/cpu.mk: Ditto.
+	* mips/cpu.mk: Added generic-reg.o and mem.o to CPU_OBJS.
+	* fr30/cpu.mk: Added generic-mem.o and reg.o to CPU_OBJS.
+
+1998-12-15  Mark Salter  <msalter@cygnus.com>
+
+	* include/bsp/bsp.h: Added prototypes for bsp_memory_read and
+	bsp_memory_write.
+
+	* mips/jmr3904/jmr.c: Fixed typo in comments.
+
+	* common/common.mk (OBJCOPY_FLAGS): Added --gap-fill=255 to speed
+	ROM programming.
+
+	* configure.in: Add test for fr30-*-elf.
+	* configure: Regenerated.
+
+	* fr30: New architecture support added.
+
+1998-12-04  Mark Salter  <msalter@cygnus.com>
+
+	* am30/eval1/eval1.c (uart2_setbaud): Fixed compile error.
+	* am30/eval1/board.mk (BOARD_LDFLAGS): Added -L path to newlib.
+	* mips/jmr3904/board.mk (BOARD_LDFLAGS): ditto.
+	* mips/dve39/board.mk (BOARD_LDFLAGS): ditto.
+
+1998-11-24  Mark Salter  <msalter@cygnus.com>
+
+	* common/bsp.c (_bsp_init): First cut at support for network link layer
+	  driver. This is pretty hackish and will change shortly.
+	* include/bsp_if.h: Added prototype for _bsp_net_procs.
+	* include/net.h: New file.
+	* commom/net.c: New file.
+	* ppc/cma101/mb86964.c: New file.
+	* ppc/cma101/sed.c: Removed.
+	* net: New directory with polling based network stack.
+	* common/common.mk: Added common network files.
+	* common/gdb.c (_bsp_gdb_handler): Minor fixes uncovered by tcp comm.
+	* ppc/cma101/board.mk: Removed sed.o, added mb86964.o
+	* ppc/cma101/cma101.c: New support for ethernet channel.
+
+Thu Nov 19 11:51:07 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* m68k/include/bsp/cpu.h : Added register offset #defines and STKFRM_SIZE
+	#define for assembly code.
+	* m68k/start.S: Modified exception return code to properly handle the
+	separate exception stack.  Now gdb function calls work.
+	* m68k/irq-cpu.c (processException): Modified routine to return the
+	frame pointer modified as necessary for the rte instruction.  This allows
+	the exception return code to properly handle a separate exception stack.
+
+Tue Nov 17 13:44:32 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* m68k/start.S: Code to handle switching to a separate exception stack.
+	* m68k/irq-cpu.c (stack_dump): New debug code to debug the stack switching.
+	* m68k/bsp-crt0.S: Removed unused DEBUG_ option
+
+Mon Nov 16 14:31:05 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* common/common.mk: Changes to fully specify path name for specs file.
+	* arm/: New subdirectory.  First pass at arm stuff.
+
+1998-11-12  Mark Salter  <msalter@cygnus.com>
+
+	* common/common.mk (gdb.o): Removed tcp.h dependency.
+
+1998-11-11  Mark Salter  <msalter@cygnus.com>
+
+	* common/gdb.c: Removed tinyTCP related hacks.
+	* common/arp.c: Removed.
+	* common/tcp.c: Removed.
+	* include/tcp.h: Removed.
+	* include/gdb.h: Removed unneeded tcp prototype.
+	* common/common.mk (COMMON_TCP_OBJS): Removed list.
+
+	* ppc/mbx/mbx.c: Fixed smc1 uart interrupt handling.
+
+	* ppc/mbx/init_mbx.S: Removed unnecessary delay loop.
+
+	* ppc/cma101/cma101.c (uart_getchar): Added input queue support
+	to keep from losing characters when interrupts are enabled.
+
+	* ppc/bsp-crt0.S (_start): Added trap to get shared data pointer.
+
+Fri Oct 30 15:26:37 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* am30/cpu.mk: Modified handling of specs files and linker scripts.
+	Now they are copied to the objdir before building.  This will ensure
+	that the latest versions of these files are used in case you have
+	a bsp installed w/ a toolchain.
+	* am30/eval1/board.mk: Ditto
+	* common/common.mk: Ditto
+	* m68k/cpu.mk: Ditto
+	* m68k/328ads/board.mk: Ditto
+	* mips/cpu.mk: Ditto
+	* mips/dve39/board.mk: Ditto
+	* mips/jmr3904/board.mk: Ditto
+	* ppc/cpu.mk: Ditto
+	* ppc/cma101/board.mk: Ditto
+	* ppc/mbx/board.mk: Ditto
+
+Wed Oct 28 15:10:22 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* m68k/328ads/328ads.c (DEBUG_INT_CODE): removed obsolete DEBUG code
+
+	* configure.in: Added support for m68k-coff target
+	* configure: Regenerated (support for m68k-coff)
+	* m68k/328ads/328ads-rom.specs: Removed file (support for m68k-coff)
+	* m68k/328ads/328ads.specs: Removed file (support for m68k-coff)
+	* m68k/328ads/328ads-rom.specs.coff: New file (support for m68k-coff)
+	* m68k/328ads/328ads-rom.specs.elf: New file (support for m68k-coff)
+	* m68k/328ads/328ads.specs.coff: New file (support for m68k-coff)
+	* m68k/328ads/328ads.specs.elf: New file (support for m68k-coff)
+	* m68k/328ads/328ads.ld: Support for m68k-coff
+	* m68k/328ads/board.mk (BOARD_SPECS): Support for m68k-coff
+
+1998-10-28  Mark Salter  <msalter@cygnus.com>
+
+	* mips/jmr3904: New directory for jmr3904 PCI board.
+	
+	* mips/irq-cpu.c: Added support for R3904 interrupt controller.
+
+	* mips/include/bsp/cpu.h (R3904_IMR): Added defines for R3904 internal
+	regs. Changed R3900 NMI from interrupt to exception.
+
+	* mips/dve39/dve.c (dga_irq_dispatch): NMI is an exception, not an irq.
+
+	* configure.in: Added jmr3904 board for mips-tx39-elf builds.
+	* configure: Updated.
+
+Mon Oct 26 15:51:40 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* m68k/328ads/328ads.c (_bsp_comm_list): Changed order of definition
+	of the comm ports so the default debug port corresponds to the ADS
+	debug port.
+
+	* common/main.c (main): Removed call to bsp_set_comm_port()
+	which was accidentally left in after testing.
+
+Sat Oct 24 13:20:02 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* m68k/328ads/328ads.ld: Don't relocate the data section when
+	building for RAM.  Access the data in place.  Also, general
+	alignment cleanups to ensure no problems.
+	* m68k/328ads/328ads.specs: Ditto
+
+	* m68k/328ads/328ads.c (uart_putchar): Make function static.
+	(uart_irq_handler): Fixed ctrl-C handling code.
+
+	* m68k/trap.S: Use SYSCALL macro rather than an inline trap
+ 	instruction.
+
+	* m68k/singlestep.c (bsp_skip_instruction): Use #define for
+	GDB_BREAKPOINT_INST_SIZE
+
+	* m68k/irq-cpu.c (processException): Adjust the PC when a
+	breakpoint exception occurs if this is a breakpoint that GDB
+	inserted.  This will allow GDB to execute the instruction.
+	(processException): When returning from exception, make sure
+	we fill in the stack frame SR and PC from the register image
+	in case GDB modified either one.
+
+	* m68k/cpu.c (syscall_handler): Some more debugging code.
+	(syscall_handler): Fixed syscall handling bug.  Make sure
+	the parameters we pull off the stack are the right values.
+
+	* m68k/bsp-crt0.S: Fix bug where data section was getting copied
+	improperly.  Also, some general cleanup.
+	* m68k/start.S: Ditto
+
+	* common/gdb.c (_bsp_gdb_handler): Added call to bsp_get_signal before
+	printing the value when the debug code is run.
+
+1998-10-26  Mark Salter  <msalter@cygnus.com>
+
+	* ppc/include/bsp/cpu.h: Added enum __regnames.
+
+	* ppc/cma101/cma101.c (uart_setbaud): Fixed return value.
+
+	* ppc/cma101/cma.specs: Removed -DHAVE_NET.
+	* ppc/cma101/cma_rom.specs: ditto.
+	
+	* ppc/cma101/board.mk (BOARD_LDFLAGS): Add path to correct newlib dir.
+	* ppc/mbx/board.mk (BOARD_LDFLAGS): Ditto.
+
+1998-10-22  Mark Salter  <msalter@cygnus.com>
+
+	* common/sysinfo.c: New file to support queries of system info.
+	* common/common.mk: Added sysinfo.o to COMMON_OBJS.
+	
+	* common/bsp.c: Support new comm mechanism and queries of system info.
+	
+	* common/syscall.c (sys_write): Now translates \n to \r\n here.
+	
+	* common/printf.c (bsp_vprintf): Use bsp API for putc function.
+	
+	* common/main.c (print_banner): New function to print some system info.
+	
+	* common/bsp_if.c: New comm port interface. Added sysinfo interface.
+	* common/gdb.c: Use new comm port interface.
+	
+	* include/bsp_if.h: Modified comm handling and added sysinfo.
+	* include/bsp/bsp.h: ditto.
+	
+	* am30/eval1/init_eval1.S: Save mem info on stack.
+	* mips/dve39/init_dve.S: ditto.
+	* ppc/cma101/init_cma286.S: ditto.
+	* ppc/mbx/init_mbx.S: ditto.
+	
+	* am30/start.S: Move mem info pointer from stack to _bsp_mem_info_ptr.
+	* mips/start.S: ditto.
+	* ppc/start.S: ditto.
+	
+	* am30/eval1/eval1.c: Modified to use new comm mechanism.
+	* mips/dve39/dve.c: ditto.
+	* ppc/cma101/cma101.c: ditto.
+	* ppc/mbx/mbx.c: ditto.
+
+Mon Oct 19 15:05:04 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* m68k/start.S: Cleanup of 68k startup code.
+	* m68k/328ads/init_328ads.S: Ditto
+
+	* m68k/irq-cpu.c (dball_irq_dispatch): Clean up of 328ADS interrupt
+	control code.  It is no longer necessary to install a separate interrupt
+	controller for the ADS interrupts (DUART, etc).
+	* m68k/328ads/328ads.c: Ditto
+	* m68k/328ads/include/bsp/328ads.h: Ditto
+	* m68k/include/bsp/cpu.h (BSP_68328_INT_MASK): Ditto
+
+	* bsp/m68k/328ads/328ads.ld: New file.  
+	Replaces bsp/m68k/bsp328ads.ld
+
+	* common/bsp_if.c (bsp_cpu_data): Modified shadow register 
+	handling to handle and board specific or user specific data.
+	* include/bsp_if.h: Ditto
+	* include/bsp/bsp.h: Ditto
+	* m68k/cpu.c (_bsp_cpu_init): Ditto
+
+	* common/bsp.c: Modified the default bsp_shared data structure
+	to nullify the appropriate fields
+
+	* am30/singlestep.c (bsp_skip_instruction): removed unused regs
+	pointer local variable.
+
+	* am30/cpu.mk: Severe modification of makefile handling.  All 
+	bsp's are now linked w/ their own specs file.  All bsp specific
+	options (startfiles, predefines, -m options, etc) are to come
+ 	from the specs file rather than the Makefiles.
+	* am30/eval1/board.mk: Ditto
+	* am30/eval1/eval1-rom.specs: Ditto
+	* common/common.mk: Ditto
+	* m68k/cpu.mk: Ditto
+	* m68k/328ads/328ads-rom.specs: Ditto
+	* m68k/328ads/328ads.specs: Ditto
+	* m68k/328ads/board.mk: Ditto
+	* mips/cpu.mk: Ditto
+	* mips/dve39/board.mk: Ditto
+	* mips/dve39/dve-rom.specs: Ditto
+	* mips/dve39/dve.specs: Ditto
+	* ppc/cpu.mk: Ditto
+	* ppc/cma101/board.mk: Ditto
+	* ppc/cma101/cma.specs: Ditto
+	* ppc/cma101/cma_rom.specs: Ditto
+	* ppc/mbx/board.mk: Ditto
+	* ppc/mbx/mbx.specs: Ditto
+	* ppc/mbx/mbx_rom.specs: Ditto
+	
+Wed Oct 14 09:48:34 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* mips/dve39/dve.c (uart_irq_clear): Made this function static.
+	* include/bsp/bsp.h: Added shadow register handling prototypes.
+	* include/bsp_if.h: Added __cpu_shadow and __board_shadow fields
+	to the shared data structure.
+	* common/bsp_if.c (bsp_cpu_shadow): New routine to handle shadow
+	registers.  Defined by CPU specific code.
+	(bsp_board_shadow): New routine to handle shadow registers.
+  	Defined by board specific code.
+	* common/bsp.c (DEBUG_BSP_INIT): Changed Debugging code to use #if
+	rather than #ifdef
+	* configure.in: Added instructions for building m68k-elf target
+	* configure: Regenerated
+
+1998-09-29  Mark Salter  <msalter@cygnus.com>
+
+	* mips/singlestep.c (bsp_skip_instruction): New routine.
+	* am30/singlestep.c (bsp_skip_instruction): Ditto.
+	* ppc/singlestep.c (bsp_skip_instruction): Ditto.
+	* include/bsp/bsp.h: Add protoype for bsp_skip_instruction.
+	* common/gdb.c (_bsp_gdb_handler): Use bsp_skip_instruction instead of
+	directly manipulating PC.
+	* mips/include/gdb-cpu.h: Removed BP_INCR definition.
+	* am30/include/gdb-cpu.h: Ditto.
+	* ppc/include/gdb-cpu.h: Ditto.
+
+Fri Sep 25 12:03:06 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* am30/cpu.c : Cleanups to remove compiler warnings
+	* am30/singlestep.c : Cleanups to remove compiler warnings
+	* am30/eval1/eval1.c : Cleanups to remove compiler warnings
+
+1998-09-25  Mark Salter  <msalter@cygnus.com>
+
+	* common/bsp_if.c (bsp_invoke_dbg_handler): New routine.
+	* include/bsp/bsp.h: Added prototype.
+
+	* ppc/start.S: Added conditional call to debug stub when exceptions
+	are not handled by application code.
+
+1998-09-24  Mark Salter  <msalter@cygnus.com>
+
+	* am30/cpu.mk (cpu-install): Use mkinstalldirs.
+
+	* ppc/bsp.ld: Removed some unneeded pieces.
+
+	* ppc/bsp-crt0.S (_start): Removed reference to weak symbol __stack as
+	bsp always provides a stack.
+
+	* ppc/start.S: Removed special section ".vectors" as the vector code
+	is ok being placed in .text.
+
+	* include/bsp-trap.h: No longer need to remove leading underscore
+	from isatty when MISSING_SYSCALL_NAMES defined.
+
+	* common/isatty.c (isatty): Removed leading underscore from function
+	name.
+
+	* configure.in: Added case for mn10300. Regenerated configure.
+
+	* Added am30 subdir.
+
+Thu Sep 24 14:31:40 1998  Drew Moseley  <dmoseley@cygnus.com>
+
+	* common/common.mk: Changed output name to bsp.rom so it would
+	work OK under windows.
+
+Thu Sep 24 11:16:54 1998  Drew Moseley  <dmoseley@cygnus.com>
+	* ppc/cpu.mk (MKINSTALLDIRS): Added call to mkinstalldirs
+	* mips/cpu.mk (MKINSTALLDIRS): Added call to mkinstalldirs
+	* mkinstalldirs: New file
+	* common/bsp.c: Cleanups to eliminate compiler warnings.
+	* common/gdb.c: Cleanups to eliminate compiler warnings.
+	* common/print.c: Cleanups to eliminate compiler warnings.
+	* common/printf.c: Cleanups to eliminate compiler warnings.
+	* common/tcp.c: Cleanups to eliminate compiler warnings.
+	* ppc/irq-cpu.c: Cleanups to eliminate compiler warnings.
+	* ppc/mbx/mbx.c: Cleanups to eliminate compiler warnings.
+
+1998-09-24  Mark Salter  <msalter@cygnus.com>
+
+	* Initial checkin to devo
+

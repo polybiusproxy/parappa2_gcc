@@ -1,0 +1,11 @@
+*lib:
+--start-group -lc -ldve39 --end-group
+
+*subtarget_cpp_spec:
+%{!mabi=32: %{!mabi=n32: %{!mabi=64: -D__mips_eabi}}} %{!msingle-float:-D__mips_soft_float} %{mhard-float:%e-mhard-float not supported.} %{msingle-float:%{msoft-float:   %e-msingle-float and -msoft-float can not both be specified.}} -D_R3900
+
+*startfile:
+bsp-crt0.o%s
+
+*linker_endian_spec:
+-T bsp3k.ld%s

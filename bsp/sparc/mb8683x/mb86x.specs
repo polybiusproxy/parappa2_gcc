@@ -1,0 +1,12 @@
+*lib:
+--start-group -lc -lmb86x -lgcc --end-group
+
+*startfile:
+crt0-86x.o%s crtbegin.o%s
+
+*link:
+-T bsp86x.ld%s
+
+*endfile:
+crtend.o%s
+

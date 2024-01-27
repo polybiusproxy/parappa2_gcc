@@ -1,0 +1,21 @@
+1999-03-05  Nick Clifton  <nickc@cygnus.com>
+
+	* execute/980526-1.x: Add StrongARM and change from -O2 to -O3.
+
+1999-02-10  Nick Clifton  <nickc@cygnus.com>
+
+	* execute/comp-goto-1.x: Add StrongARM and rework to avoid bug in
+	framework.exp.
+
+	* execute/980506-2.x: No longer needed.
+	* execute/bcp-1.x: No longer needed.
+
+	* special/special.exp: Suppress use of -fpic when compiling
+	special/981006-1 for the StrongARM.
+
+	* execute/bcp-1.x: Add
+
+1998-12-17  Nick Clifton  <nickc@cygnus.com>
+
+	* special/special.exp: Suppress use of -fpic when compiling
+	special/981006-1 for the FR30.

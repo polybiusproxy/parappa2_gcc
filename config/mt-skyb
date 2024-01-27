@@ -1,0 +1,22 @@
+# SKYB makefile fragment
+# Build dvp-elf-as with the mips toolchain.
+
+EXTRA_TARGET_HOST_ALL_MODULES = all-dvp-gas
+EXTRA_TARGET_HOST_INSTALL_MODULES = install-dvp-gas
+EXTRA_TARGET_HOST_CHECK_MODULES = check-dvp-gas
+
+all-dvp-gas: all-libiberty all-opcodes all-bfd all-intl
+.PHONY: all-dvp-gas
+
+# We don't ship gcc or newlib.
+
+# ??? Ideally this would work but the default definition appears
+# later in the file.
+INSTALL_TARGET_MODULES = \
+	install-target-libgloss
+
+INSTALL_TARGET = installdirs \
+	$(INSTALL_MODULES) \
+	install-target-libgloss \
+	$(INSTALL_X11_MODULES) \
+	$(INSTALL_DOSREL)

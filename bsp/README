@@ -1,0 +1,52 @@
+
+
+Adding support for a new CPU.
+-----------------------------
+
+In devo/configure.in, add target-bsp to target_configdirs. For
+example, here is the relevant fragment for the mn10300:
+
+  case "${target}" in
+       ...
+    mn10300-*-*)
+      noconfigdirs="$noconfigdirs"
+      target_configdirs="${target_configdirs} target-bsp"
+      ;;
+
+
+In devo/bsp, create a directory for the new cpu. Under that
+directory, create directories for each board to be supported.
+
+In devo/bsp/configure.in, add a case statement for the new cpu
+and define 'archdir' and 'boards' as appropriate. For example,
+the mn10300 uses a cpu directory named 'am30' and an eval board
+directory named 'eval1'. Thus:
+
+  case "${target}" in
+      ...
+    mn10300-*-*)
+	archdir="am30";
+        boards="eval1";
+	;;
+
+
+In the newly created 'archdir', create a makefile fragment
+named 'cpu.mk'. In there, define the following variables:
+
+  CPU_VPATH - Path[s] to source files. Usually, just
+              '@top_srcdir@/@archdir@'
+
+  CPU_CFLAGS - CPU specific compile flags.
+
+  CPU_LDFLAGS - CPU specific link flags.
+ 
+  CPU_DEFINES - CPU specific defines.
+
+  CPU_INCLUDES - CPU specific include directives.
+
+  CPU_OBJS - List of CPU specific objects common to all
+             boards.
+
+
+
+  

@@ -1,0 +1,24 @@
+*lib_default:
+--start-group -lc -lcma --end-group
+
+*cpp_os_default:
+-DCPU_MPC8XX
+
+*cc1:
+%{G*} %{!mlittle: %{!mlittle-endian: %{!mbig: %{!mbig-endian:     %{mcall-nt: -mlittle }     %{mcall-aixdesc: -mbig }     %{mcall-solaris: -mlittle }     %{mcall-linux: -mbig} }}}} %{mcall-solaris: -mregnames } %{mno-sdata: -msdata=none } %{meabi: %{!mcall-*: -mcall-sysv }} %{!meabi: %{!mno-eabi:     %{mrelocatable: -meabi }     %{mcall-solaris: -mno-eabi }     %{mcall-linux: -mno-eabi }}} %{msdata: -msdata=default} %{mno-sdata: -msdata=none} -meabi -msoft-float -mcpu=860
+
+*cc1plus:
+-meabi -msoft-float -mcpu=860
+
+*startfile_default:
+ecrti.o%s cma-start.o%s
+
+*endfile_default:
+ecrtn.o%s
+
+*link_os_default:
+-T bsp.ld%s -Ttext 0xfff00000 -Tdata 0x4000
+
+*multilib:
+nof !msoft-float !mlittle !mbig !mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof msoft-float !mlittle !mbig !mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof !msoft-float mlittle !mbig !mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof !msoft-float !mlittle mbig !mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof !msoft-float !mlittle !mbig mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof !msoft-float !mlittle !mbig !mcall-sysv mcall-aix !mcall-solaris !mcall-linux;nof !msoft-float !mlittle !mbig !mcall-sysv !mcall-aix mcall-solaris !mcall-linux;nof !msoft-float !mlittle !mbig !mcall-sysv !mcall-aix !mcall-solaris mcall-linux;nof !msoft-float mlittle !mbig mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof !msoft-float mlittle !mbig !mcall-sysv mcall-aix !mcall-solaris !mcall-linux;nof !msoft-float !mlittle mbig mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof !msoft-float !mlittle mbig !mcall-sysv mcall-aix !mcall-solaris !mcall-linux;nof/le msoft-float mlittle !mbig !mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof/be msoft-float !mlittle mbig !mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof/cs msoft-float !mlittle !mbig mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof/ca msoft-float !mlittle !mbig !mcall-sysv mcall-aix !mcall-solaris !mcall-linux;nof/le/cs msoft-float mlittle !mbig mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof/le/ca msoft-float mlittle !mbig !mcall-sysv mcall-aix !mcall-solaris !mcall-linux;nof/be/cs msoft-float !mlittle mbig mcall-sysv !mcall-aix !mcall-solaris !mcall-linux;nof/be/ca msoft-float !mlittle mbig !mcall-sysv mcall-aix !mcall-solaris !mcall-linux;
+

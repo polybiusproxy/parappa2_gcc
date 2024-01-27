@@ -1,0 +1,13 @@
+# Test assembler warnings.
+
+if [istarget dvp*-*-*] {
+
+    load_lib gas-dg.exp
+
+    dg-init
+
+    dg-runtest [lsort [glob -nocomplain $srcdir/$subdir/*_d.s]] "" ""
+
+    dg-finish
+
+}

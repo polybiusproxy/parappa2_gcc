@@ -1,0 +1,8 @@
+*lib:
+--start-group -lc -leval1 --end-group
+
+*startfile:
+bsp-crt0.o%s
+
+*link:
+-T eval1.ld%s

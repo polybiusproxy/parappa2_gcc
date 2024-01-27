@@ -1,0 +1,84 @@
+/* This program is provided to simplify invoking the linker (ld)  -*- C -*-
+   for the SKYB (vpu-elf) configuration.
+   Copyright 1998, Cygnus Solutions.
+
+   The usual way to perform linking is via gcc, but the above configuration
+   does not include a gcc.
+
+   Usage Example:
+   link [--debug-exec] -o sce_test9 sce_test9.o refresh.o -Tvpu.ld
+
+   --debug-exec is for debugging this program and must appear first
+   if present.
+*/
+
+#include "config.h"
+#include "libiberty.h"
+#include <stdio.h>
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#else
+extern const char *getenv ();
+#endif
+
+static const char *prefix = "@prefix@";
+static const char *exec_prefix = "@exec_prefix@";
+static const char *target_alias = "@target_alias@";
+static const char *gcc_exec_prefix_var = "GCC_EXEC_PREFIX";
+
+int
+main (int argc, char *argv[])
+{
+  char *tool_dir;
+  char *ld_path;
+  char *gcc_exec_prefix;
+  char **new_argv;
+  char *crt0_path;
+  char *minusL_path;
+  int i,j;
+  int debug_p = 0;
+
+  /* Handle exec-prefix == prefix.  */
+  if (strcmp (exec_prefix, "${prefix}") == 0)
+    exec_prefix = prefix;
+
+  asprintf (&tool_dir, "%s/%s", exec_prefix, target_alias);
+  asprintf (&ld_path, "%s/bin/%s-ld", exec_prefix, target_alias);
+
+  gcc_exec_prefix = getenv (gcc_exec_prefix_var);
+  if (gcc_exec_prefix)
+    {
+      /* ??? Could look at argv[0].  */
+      asprintf (&tool_dir, "%s../../%s", gcc_exec_prefix, target_alias);
+      asprintf (&ld_path, "%s../../bin/%s-ld", gcc_exec_prefix, target_alias);
+    }
+
+  new_argv = (char **) xmalloc ((argc + 5) * sizeof (char *));
+  new_argv[0] = ld_path;
+  new_argv[1] = "-EL";
+  asprintf (&crt0_path, "%s/lib/crt0b.o", tool_dir);
+  new_argv[2] = crt0_path;
+  asprintf (&minusL_path, "-L%s/lib", tool_dir);
+  new_argv[3] = minusL_path;
+  i = 1;
+  j = 4;
+  if (argc >= 2 && strcmp (argv[i], "--debug-exec") == 0)
+    {
+      debug_p = 1;
+      ++i;
+    }
+  while (i < argc)
+    new_argv[j++] = argv[i++];
+  new_argv[j] = 0;
+
+  if (debug_p)
+    {
+      for (i = 0; new_argv[i] != 0; ++i)
+	fprintf (stderr, "%s ", new_argv[i]);
+      fprintf (stderr, "\n");
+    }
+
+  execv (ld_path, new_argv);
+  perror ("link, can't run ld");
+  exit (1);
+}
