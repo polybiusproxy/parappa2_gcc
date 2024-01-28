@@ -781,6 +781,7 @@ proc set_target_name {targ {prompt 1}} {
       set gdb_target_name $name_tmp
       return 0
     }
+    vwait gdb_target_name
     set target $gdb_target_name
     set targ [TargetSelection::getname $target cmd]
     set gdb_target_cmd $cmd_tmp
@@ -788,6 +789,13 @@ proc set_target_name {targ {prompt 1}} {
     
     set targ_opts ""
     switch -regexp -- $gdb_target_name {
+      deci2 {
+        set hostname [pref getd gdb/load/$target-hostname]
+        if {$hostname == ""} {
+          set hostname [pref get gdb/load/default-hostname]
+        }
+        set targ [lrep $targ "deci2X" $hostname]
+      }
       sim|ice {
 	set targ $gdb_target_name
 	set targ_opts [pref getd gdb/load/${gdb_target_name}-opts]

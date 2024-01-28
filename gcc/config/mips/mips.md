@@ -2690,10 +2690,10 @@
 	(div:SF (match_operand:SF 1 "register_operand" "f")
 		(match_operand:SF 2 "register_operand" "f")))]
   "TARGET_HARD_FLOAT"
-  "div.s\\t%0,%1,%2"
+  "%(nop\;nop\;div.s\\t%0,%1,%2%)"
   [(set_attr "type"	"fdiv")
    (set_attr "mode"	"SF")
-   (set_attr "length"	"1")])
+   (set_attr "length"	"3")])
 
 (define_insn ""
   [(set (match_operand:DF 0 "register_operand" "=f")
@@ -3324,10 +3324,10 @@
   [(set (match_operand:SF 0 "register_operand" "=f")
 	(sqrt:SF (match_operand:SF 1 "register_operand" "f")))]
   "TARGET_HARD_FLOAT && HAVE_SQRT_P()"
-  "sqrt.s\\t%0,%1"
+  "%(nop\;nop\;sqrt.s\\t%0,%1%)"
   [(set_attr "type"	"fsqrt")
    (set_attr "mode"	"SF")
-   (set_attr "length"	"1")])
+   (set_attr "length"	"3")])
 
 (define_insn ""
   [(set (match_operand:DF 0 "register_operand" "=f")
@@ -3344,20 +3344,20 @@
 	(div:SF (match_operand:SF 1 "const_float_1_operand" "")
 		(sqrt:SF (match_operand:SF 2 "register_operand" "f"))))]
   "mips_isa >= 4 && TARGET_HARD_FLOAT && flag_fast_math"
-  "rsqrt.s\\t%0,%2"
+  "%(nop\;nop\;rsqrt.s\\t%0,%2%)"
   [(set_attr "type"	"frsqrt") ; CYGNUS LOCAL vr5400/raeburn
    (set_attr "mode"	"SF")
-   (set_attr "length"	"1")])
+   (set_attr "length"	"3")])
 
 (define_insn ""
   [(set (match_operand:SF 0 "register_operand" "=f")
       (div:SF (match_operand:SF 1 "register_operand" "f")
 	      (sqrt:SF (match_operand:SF 2 "register_operand" "f"))))]
   "TARGET_MIPS5900 && TARGET_HARD_FLOAT && flag_fast_math"
-  "rsqrt.s\\t%0,%1,%2"
+  "%(nop\;nop\;rsqrt.s\\t%0,%1,%2%)"
   [(set_attr "type"	"frsqrt")
    (set_attr "mode"	"SF")
-   (set_attr "length"	"1")])
+   (set_attr "length"	"3")])
 
 ;;
 ;;  ....................

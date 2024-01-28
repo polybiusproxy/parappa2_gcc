@@ -8444,6 +8444,12 @@ schedule_insns (dump_file)
   bzero ((char *) is_load_insn, max_uid * sizeof (char));
 
   insn_orig_block = (int *) xmalloc (max_uid * sizeof (int));
+  {
+    int i;
+
+    for (i = 0; i < max_uid; ++i)
+      insn_orig_block[i] = n_basic_blocks + 1;
+  }
   insn_luid = (int *) xmalloc (max_uid * sizeof (int));
 
   luid = 0;

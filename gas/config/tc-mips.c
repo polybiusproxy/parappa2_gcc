@@ -1372,6 +1372,31 @@ mips16_mark_labels ()
     }
 }
 
+/* SCE local */
+static int
+check_branch_or_jump_insn(buf)
+    unsigned char *buf;
+{
+  unsigned int insn = buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0];
+  unsigned int opc = insn >> 26;
+  unsigned int rt = (insn >> 16) & 0x1f;
+  unsigned int fn = insn & 0x3f;
+
+  /* j, jal, beq, bne, blez, bgtz */
+  if ((opc >= 2 && opc <= 7)
+      /* beql, bnel, blezl, bgtzl */
+      || (opc >= 20 && opc <= 23)
+      /* jr, jalr */
+      || (opc == 0 && (fn == 8 || fn == 9))
+      /* bltz, bgez, bltzl, bgezl, bltzal, bgezal, bltzall, bgezall */
+      || (opc == 1 && ((rt >= 0 && rt <= 3) || (rt >= 16 && rt <= 19)))
+      /* bc1f, bc1t, bc1fl, bc1tl, bc2f, bc2t, bc2fl, bc2tl */
+      || ((opc == 17 || opc == 18) && (rt >= 0 && rt <= 3)))
+    return 1;
+  return 0;
+}
+/* end SCE local */
+
 /* Output an instruction.  PLACE is where to put the instruction; if
    it is NULL, this uses frag_more to get room.  IP is the instruction
    information.  ADDRESS_EXPR is an operand of the instruction to be
@@ -1390,6 +1415,57 @@ append_insn (place, ip, address_expr, reloc_type, unmatched_hi)
   fixS *fixp;
   int nops = 0;
 
+  /* SCE local */
+#define SAFE_LOOP_BODY_LEN 5
+  int nops2 = 0;
+  int dont_swap = 0;
+
+  /* The Emotion Engine #2.X mistakes branch target address
+     under certain condition. This defect does not happen if
+     all 'do ... while()' loops consists of more than equal 
+     to five instructions (excludes a branch instruction and
+     an instruction in BDS), so we have to ensure that all
+     loops have at least five instructions.
+     Here may not be a right place to do work around but
+     following code works anyway.  */
+  if (mips_cpu == 5900
+      && reloc_type == BFD_RELOC_16_PCREL_S2
+      && address_expr != NULL
+      && address_expr->X_add_symbol != NULL
+      && address_expr->X_add_symbol->sy_value.X_op == O_constant
+      && address_expr->X_add_symbol->sy_frag != &zero_address_frag)
+    {
+      struct frag *fp = address_expr->X_add_symbol->sy_frag;
+      int i = address_expr->X_add_symbol->sy_value.X_add_number;
+      int loop_body_len = 0;
+
+      while (fp && (loop_body_len >> 2) <= SAFE_LOOP_BODY_LEN)
+	{
+	  /* 'fp->fr_var' is not added to 'upper_bound' because
+	     size of variant portion of the frag may be zero and
+	     we can't know exact size of it, so we have to assume
+	     worst case here.  */
+	  int upper_bound = fp == frag_now ? frag_now_fix() : fp->fr_fix;
+
+	  for ( ; i < upper_bound; i += 4)
+	    if (check_branch_or_jump_insn (&fp->fr_literal[i]))
+	      goto ee_defect_check_done;
+	  loop_body_len += upper_bound;
+	  i = 0;
+	  fp = fp->fr_next;
+	}
+
+      loop_body_len -= address_expr->X_add_symbol->sy_value.X_add_number;
+      loop_body_len >>= 2;
+
+      if (loop_body_len < SAFE_LOOP_BODY_LEN)
+	nops2 = SAFE_LOOP_BODY_LEN - loop_body_len;
+      else if (loop_body_len == SAFE_LOOP_BODY_LEN)
+	dont_swap = 1;
+    }
+ee_defect_check_done:
+  ;
+  /* end SCE local */
   /* Mark instruction labels in mips16 mode.  */
   if (mips_opts.mips16)
     mips16_mark_labels ();
@@ -1397,7 +1473,15 @@ append_insn (place, ip, address_expr, reloc_type, unmatched_hi)
   prev_pinfo = prev_insn.insn_mo->pinfo;
   pinfo = ip->insn_mo->pinfo;
 
+/* SCE local */
+#if 1
+  if (place == NULL && (! mips_opts.noreorder || prev_nop_frag != NULL || nops2 != 0))
+#else
+/* end SCE local */
   if (place == NULL && (! mips_opts.noreorder || prev_nop_frag != NULL))
+/* SCE local */
+#endif
+/* end SCE local */
     {
       int prev_prev_nop;
 
@@ -1618,8 +1702,19 @@ append_insn (place, ip, address_expr, reloc_type, unmatched_hi)
 	  && ip->insn_opcode == (mips_opts.mips16 ? 0x6500 : 0))
 	--nops;
 
+/* SCE local */
+      if (nops2 > nops) nops = nops2;
+/* end SCE local */
       /* Now emit the right number of NOP instructions.  */
+/* SCE local */
+#if 1
+      if (nops2 > 0)
+#else
+/* end SCE local */
       if (nops > 0 && ! mips_opts.noreorder)
+/* SCE local */
+#endif
+/* end SCE local */
 	{
 	  fragS *old_frag;
 	  unsigned long old_frag_offset;
@@ -1629,6 +1724,18 @@ append_insn (place, ip, address_expr, reloc_type, unmatched_hi)
 	  old_frag = frag_now;
 	  old_frag_offset = frag_now_fix ();
 
+/* SCE local */
+	  if (nops2 > 0)
+	    for (l = insn_labels; l != NULL; l = l->next)
+	      {
+		assert (S_GET_SEGMENT (l->label) == now_seg);
+		l->label->sy_frag = frag_now;
+		S_SET_VALUE (l->label, (valueT) frag_now_fix ());
+		/* mips16 text labels are stored as odd.  */
+		if (mips_opts.mips16)
+		    ++l->label->sy_value.X_add_number;
+	      }
+/* end SCE local */
 	  for (i = 0; i < nops; i++)
 	    emit_nop ();
 
@@ -1646,6 +1753,9 @@ append_insn (place, ip, address_expr, reloc_type, unmatched_hi)
 	      frag_grow (40);
 	    }
 
+/* SCE local */
+	  if (nops2 == 0)
+/* end SCE local */
 	  for (l = insn_labels; l != NULL; l = l->next)
 	    {
 	      assert (S_GET_SEGMENT (l->label) == now_seg);
@@ -1888,7 +1998,16 @@ append_insn (place, ip, address_expr, reloc_type, unmatched_hi)
       if ((pinfo & INSN_UNCOND_BRANCH_DELAY)
 	  || (pinfo & INSN_COND_BRANCH_DELAY))
 	{
+/* SCE local */
+#if 1
+	  if (dont_swap
+	      || mips_optimize < 2
+#else
+/* end SCE local */
 	  if (mips_optimize < 2
+/* SCE local */
+#endif
+/* end SCE local */
 	      /* If we have seen .set volatile or .set nomove, don't
 		 optimize.  */
 	      || mips_opts.nomove != 0

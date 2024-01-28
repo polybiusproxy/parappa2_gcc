@@ -176,6 +176,15 @@ body TargetSelection::_init_db {} {
   set gdb_target(mipstcp,cmd) "mips tcpX"
   set gdb_target(mipstcp,runlist) {1 0 0 1}
 
+  # DECI2
+  set gdb_target(deci2,pretty-name) "deci2"
+  set gdb_target(deci2,defbaud) "deci2"
+  set gdb_target(deci2,baud-rates) {}
+  set gdb_target(deci2,cmd) "deci2 deci2X"
+  set gdb_target(deci2,runlist) {0 1 1 0}
+  set gdb_target(deci2,after_attaching) {}
+  set gdb_target(deci2,options) ""
+
 }
 
 body TargetSelection::default_port {} {
@@ -621,6 +630,28 @@ body TargetSelection::config_dialog {t} {
 
     $mapped1 configure -state normal
     $mapped2 configure -state normal
+  } elseif {$gdb_target($t,defbaud) == "deci2"} {
+    # we have a deci2 target
+    # map host and porte
+    if {$mapped1 != "$fr.host"} {
+      grid forget $mapped1
+      set mapped1 $fr.host
+      grid $mapped1 -row 1 -column 1 -sticky w -padx 5 -pady 5
+    }
+    $fr.cbl configure -text "Hostname:"
+    $fr.host config -textvariable [pref varname gdb/load/$t-hostname]
+
+    if {$mapped2 != "$fr.porte"} {
+      grid forget $mapped2
+      set mapped2 $fr.porte
+      grid $mapped2 -row 2 -column 1 -sticky w -padx 5 -pady 5
+    }
+    $fr.portl configure -text {Port:}
+    $fr.porte config -textvariable [pref varname gdb/load/$t-portname]
+
+    $mapped1 configure -state normal
+    $mapped2 configure -state normal
+
   } elseif {$gdb_target($t,defbaud) != ""} {
     # we have a serial target
     # map port and cb
@@ -678,7 +709,11 @@ body TargetSelection::change_target {w {name ""}} {
   debug "new target: $target"
   set defbaud $gdb_target($target,defbaud)
   pref define gdb/load/$target-baud $defbaud
-  pref define gdb/load/$target-portname 1000
+  if {$defbaud =="deci2"} {
+    pref define gdb/load/$target-portname 8510
+  } else {
+    pref define gdb/load/$target-portname 1000
+  }
   pref define gdb/load/$target-hostname [pref get gdb/load/default-hostname]
   if {$defbaud == ""} {
     pref define gdb/load/$target-port ""
@@ -722,7 +757,7 @@ body TargetSelection::change_target {w {name ""}} {
 # ------------------------------------------------------------------
 body TargetSelection::change_baud {w {baud ""}} {
   if {$baud != ""} {
-    if {[string compare $baud "TCP"] != 0} {
+    if {[string compare $baud "TCP"] != 0 && [string compare $baud "deci2"] != 0} {
       gdb_cmd "set remotebaud $baud"
       if {[catch {gdb_cmd "show remotebaud"} res]} {
 	set newbaud 0

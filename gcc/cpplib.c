@@ -671,6 +671,10 @@ skip_comment (pfile, linep)
       FORWARD(1);
       for (;;)
 	{
+#ifdef MULTIBYTE_CHARS
+          while (PEEKC() != EOF && local_mbtowc(NULL, FORWARD(0), 1) == -1 && PEEKN(1) != EOF)
+            FORWARD(2);
+#endif
 	  c = GETC ();
 	  if (c == EOF)
 	    return ' '; /* Allow // to be terminated by EOF.  */
@@ -4193,7 +4197,17 @@ cpp_get_token (pfile)
 	  CPP_PUTC (pfile, c);
 	  while (1)
 	    {
-	      int cc = GETC();
+	      int cc;
+#ifdef MULTIBYTE_CHARS
+	      while (PEEKC() != EOF && local_mbtowc(NULL, FORWARD(0), 1) == -1 && PEEKN(1) != EOF)
+	        {
+		  cc = GETC();
+		  CPP_PUTC (pfile, cc);
+		  cc = GETC();
+		  CPP_PUTC (pfile, cc);
+		}
+#endif
+	      cc = GETC ();
 	      if (cc == EOF)
 		{
 		  if (CPP_IS_MACRO_BUFFER (CPP_BUFFER (pfile)))

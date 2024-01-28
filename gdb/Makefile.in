@@ -1006,6 +1006,7 @@ ALLDEPFILES = 29k-share/udi/udip2soc.c 29k-share/udi/udr.c \
 	remote-mm.c remote-nindy.c remote-os9k.c remote-rdp.c remote-sim.c \
 	remote-st.c remote-utils.c dcache.c \
 	remote-udi.c remote-vx.c remote-vx29k.c \
+	remote-deci2.c \
 	rs6000-nat.c rs6000-tdep.c \
 	ser-go32.c ser-ocd.c ser-tcp.c sh-tdep.c solib.c sparc-nat.c \
 	sparc-tdep.c sparcl-tdep.c sun3-nat.c sun386-nat.c \
@@ -1536,6 +1537,10 @@ remote-utils.o: remote-utils.c $(defs_h) $(gdbcmd_h) $(gdbcore_h) \
 
 remote.o: remote.c $(bfd_h) $(wait_h) $(defs_h) $(gdbcmd_h) \
 	$(inferior_h) $(remote_utils_h) symfile.h terminal.h gdb_string.h
+
+remote-deci2.o: remote-deci2.c $(defs_h) $(inferior_h) $(gdbcore_h) \
+	symfile.h $(wait_h) $(gdbcmd_h) serial.h $(remote_utils_h) \
+	gdb_string.h
 
 remote-nrom.o: remote-nrom.c $(bfd_h) $(wait_h) $(defs_h) $(gdbcmd_h) \
 	$(inferior_h) $(remote_utils_h) symfile.h terminal.h
